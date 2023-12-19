@@ -13,7 +13,7 @@ function list (req, res, next) {
 
 function bodyDataHas (propertyName) {
     return function (req, res, next) {
-        const hasProperty = req.body[propertyName];
+        const hasProperty = req.body.data[propertyName];
         if(hasProperty) {
             next()
         } else {
@@ -26,7 +26,7 @@ function bodyDataHas (propertyName) {
 }
 
 function dishExists (req, res, next) {
-    const dishId = Number(req.params.dishId)
+    const dishId = req.params.dishId
 
     const findDish = dishes.find((dish => dish.id === dishId))
 
@@ -60,8 +60,12 @@ function create (req, res, next) {
 }
 
 function read (req, res, next) {
-    const
+    const dish = res.locals.dish
+
+    res.status(200).json({ data: dish })
 }
+
+
 
 module.exports = {
     create: [
@@ -72,5 +76,5 @@ module.exports = {
         create
     ],
     list,
-    read,
+    read: [dishExists, read],
 }
