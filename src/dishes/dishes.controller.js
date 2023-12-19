@@ -25,6 +25,19 @@ function bodyDataHas (propertyName) {
     }
 }
 
+function validatePrice (req, res, next) {
+    const { data: { price } = {} } = req.body
+
+    if(Number.isInteger(price) && price > 0) {
+        next()
+    } else {
+        next ({
+            status: 400,
+            message: "Dish must have a price that is an integer greater than 0"
+        })
+    }
+}
+
 function dishExists (req, res, next) {
     const dishId = req.params.dishId
 
@@ -73,6 +86,7 @@ module.exports = {
         bodyDataHas("description"),
         bodyDataHas("price"),
         bodyDataHas("image_url"),
+        validatePrice,
         create
     ],
     list,
