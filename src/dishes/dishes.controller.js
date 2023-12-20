@@ -76,7 +76,7 @@ function create (req, res, next) {
     const newId = nextId();
 
     newDish = {
-        newId,
+        id: newId,
         name,
         description,
         price,
@@ -95,7 +95,18 @@ function read (req, res, next) {
 }
 
 function update (req, res, next) {
+    const { data: { name, description, price, image_url } = {} } = req.body
+    const dishId = req.params.dishId
 
+    const findDish = dishes.find((dish) => dish.id === dishId)
+
+    findDish.id = dishId
+    findDish.name = name
+    findDish.description = description
+    findDish.price = price
+    findDish.image_url = image_url
+
+    res.status(200).json({ data: findDish })
 }
 
 
@@ -111,12 +122,12 @@ module.exports = {
     ],
     read: [dishExists, read],
     update: [
+        dishExists,
         bodyDataHas("name"),
         bodyDataHas("description"),
         bodyDataHas("price"),
         bodyDataHas("image_url"),
         validatePrice,
-        dishExists,
         bodyIdMatchesRouteId,
         update
     ],
